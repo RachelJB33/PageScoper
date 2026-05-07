@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PageScoper | Website Project Dashboard</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+  <link href=styles/styles.css  rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <script src="script.js" defer></script>
+</head>
+<body class="bg-slate-900 text-slate-100">
+
+  <main class="min-h-screen px-4 py-5 sm:px-6 lg:px-8 lg:py-10">
+
+    <div class="mx-auto w-full max-w-6xl space-y-6">
+
+      <!-- HEADER -->
+      <header class="space-y-1">
+        <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight">
+          <span class="text-slate-400">&lt;</span>
+          <span class="inline-flex gap-[1px]">
+            <span class="text-slate-100">Page</span>
+            <span class="text-indigo-400">Scoper</span>
+          </span>
+          <span class="text-slate-400">/&gt;</span>
+        </h1>
+        <p class="text-sm text-slate-400">Plan, organize, and track website projects.</p>
+      </header>
+
+      <!-- MAIN LAYOUT -->
+      <div class="grid gap-5 lg:grid-cols-[380px_1fr] lg:gap-8">
+
+        <!-- FORM -->
+        <form id="projectForm" class="card self-start bg-slate-800 border border-slate-700 shadow-md rounded-2xl p-5 sm:p-6 space-y-4">
+
+          <h2 class="text-xl font-semibold text-slate-100">Create Project</h2>
+
+          <input id="clientName" type="text" placeholder="Client Name"
+            class="input input-bordered w-full !bg-slate-900 !border-slate-700 !text-slate-100 placeholder:!text-slate-500 focus:!border-indigo-500 focus:outline-none" required />
+
+          <input id="projectName" type="text" placeholder="Project Name"
+            class="input input-bordered w-full !bg-slate-900 !border-slate-700 !text-slate-100 placeholder:!text-slate-500 focus:!border-indigo-500 focus:outline-none" required />
+
+          <select id="projectType" class="select select-bordered w-full bg-slate-900 border-slate-700 text-slate-100 invalid:text-slate-500 focus:!border-indigo-500 focus:outline-none" required>
+            <option value="" disabled selected hidden>Project Type</option>
+            <option class="text-slate-100">Landing Page</option>
+            <option class="text-slate-100">Business Website</option>
+            <option class="text-slate-100">Portfolio</option>
+            <option class="text-slate-100">Redesign</option>
+          </select>
+
+          <input id="pageCount" type="number" placeholder="Page Count (#)" min="1"
+            class="input input-bordered w-full !bg-slate-900 !border-slate-700 !text-slate-100 placeholder:!text-slate-500 focus:!border-indigo-500 focus:outline-none" />
+
+          <select id="projectStatus" class="select select-bordered w-full bg-slate-900 border-slate-700 text-slate-100 invalid:text-slate-500 focus:!border-indigo-500 focus:outline-none" required>
+            <option value=""
+            disabled selected hidden>Project Status</option>
+            <option class="text-slate-100">Inquiry</option>
+            <option class="text-slate-100">Planning</option>
+            <option class="text-slate-100">Design</option>
+            <option class="text-slate-100">Build</option>
+            <option class="text-slate-100">Launched</option>
+          </select>
+
+          <button type="submit" class="btn !shadow-none bg-indigo-600/90 hover:bg-indigo-500 text-white border border-indigo-500/40 w-full">
+            Add Project
+          </button>
+
+        </form>
+
+        <!-- DASHBOARD -->
+        <section>
+
+          <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+
+            <!-- Projects title -->
+            <h2 class="text-xl font-semibold text-slate-100">
+              Projects 
+              <span id="projectCount" class="text-slate-400 text-base font-medium">(0)</span>
+            </h2>
+
+            <!-- RIGHT SIDE CONTROLS -->
+            <div class="flex flex-col gap-3 sm:ml-auto sm:flex-row          sm:items-center">
+
+              <!-- SEARCH INPUT -->
+              <input 
+                id="searchInput"
+                type="text"
+                placeholder="Search by project or client..."
+                class="input input-bordered input-sm w-full sm:w-64 bg-slate-900 border-slate-700 text-slate-100          placeholder:text-slate-500 focus:!border-indigo-500          focus:outline-none"
+             />
+
+              <!-- STATUS FILTER -->
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <span class="text-sm text-slate-400 whitespace-nowrap">
+                  Status:
+                </span>
+
+                <select 
+                  id="statusFilter" 
+                  class="select select-bordered select-sm w-full sm:w-40          bg-slate-900 border-slate-700 text-slate-100          focus:!border-indigo-500 focus:outline-none"
+               >
+                  <option value="Active">All Active Projects</option>
+                  <option>Inquiry</option>
+                  <option>Planning</option>
+                  <option>Design</option>
+                  <option>Build</option>
+                  <option>Launched</option>
+                  <option value="Trash">Trash</option>
+                </select>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div id="projectList" class="grid gap-4 sm:grid-cols-2 lg:gap-5"></div>
+
+        </section>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <dialog id="actionModal" class="modal">
+  <div class="modal-box !bg-slate-800 !text-slate-100 border border-slate-700 rounded-2xl">
+    <h3 id="modalTitle" class="font-bold text-lg">Are you sure?</h3>
+
+    <p id="modalText" class="py-4 text-sm opacity-70">
+      This action will update your project.
+    </p>
+
+    <div class="modal-action">
+      <button id="cancelActionBtn" class="btn !bg-transparent !border-none !shadow-none !hover:bg-slate-700 text-slate-400 hover:text-indigo-400">Cancel</button>
+      <button id="confirmActionBtn" class="btn !shadow-none">Confirm</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="editModal" class="modal">
+  <div class="modal-box !bg-slate-800 !text-slate-100 border border-slate-700 rounded-2xl">
+    <h3 class="font-bold text-lg">Edit Project</h3>
+
+    <form id="editProjectForm" class="space-y-4 mt-4">
+
+      <input id="editClientName" type="text" placeholder="Client Name"
+        class="input input-bordered w-full !bg-slate-900 !border-slate-700 !text-slate-100 placeholder:!text-slate-500 focus:!border-indigo-500 focus:outline-none" required />
+
+      <input id="editProjectName" type="text" placeholder="Project Name"
+        class="input input-bordered w-full !bg-slate-900 !border-slate-700 !text-slate-100 placeholder:!text-slate-500 focus:!border-indigo-500 focus:outline-none" required />
+
+      <select id="editProjectType" class="select select-bordered w-full bg-slate-900 border-slate-700 text-slate-100 focus:!border-indigo-500 focus:outline-none">
+        <option>Landing Page</option>
+        <option>Business Website</option>
+        <option>Portfolio</option>
+        <option>Redesign</option>
+      </select>
+
+      <input id="editPageCount" type="number" min="1"
+        class="input input-bordered w-full !bg-slate-900 !border-slate-700 !text-slate-100 placeholder:!text-slate-500 focus:!border-indigo-500 focus:outline-none" />
+
+      <select id="editProjectStatus" class="select select-bordered w-full bg-slate-900 border-slate-700 text-slate-100 focus:!border-indigo-500 focus:outline-none">
+        <option>Inquiry</option>
+        <option>Planning</option>
+        <option>Design</option>
+        <option>Build</option>
+        <option>Launched</option>
+      </select>
+
+      <div class="modal-action">
+        <button id="cancelEditBtn" type="button" class="btn !bg-transparent !border-none !shadow-none !hover:bg-slate-700 text-slate-400 hover:text-indigo-400">
+          Cancel
+        </button>
+
+        <button type="submit" class="btn !shadow-none bg-indigo-600/90 hover:bg-indigo-500 text-white border border-indigo-500/40">
+          Save Changes
+        </button>
+      </div>
+
+    </form>
+  </div>
+</dialog>
+
+<!-- NOTES MODAL -->
+<dialog id="notesModal" class="modal">
+
+  <div class="modal-box bg-slate-800 border border-slate-700 text-slate-100">
+
+    <h3 class="font-bold text-lg">
+      Project Notes
+    </h3>
+
+    <p class="py-2 text-sm text-slate-400">
+      Add quick notes, reminders, or project details.
+    </p>
+
+    <!-- Notes form -->
+    <form id="notesForm" class="space-y-4">
+
+      <textarea
+        id="projectNotes"
+        class="textarea textarea-bordered w-full min-h-40 bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500 focus:!border-indigo-500 focus:outline-none"
+        placeholder="Add project reminders, client requests, next steps, or details you don’t want to forget..."
+      ></textarea>
+
+      <div class="modal-action">
+
+        <button 
+          id="cancelNotesBtn" 
+          type="button" 
+          class="btn !bg-transparent !border-none !shadow-none !hover:bg-slate-700 text-slate-400 hover:text-indigo-400"
+        >
+          Cancel
+        </button>
+
+        <button 
+          type="submit" 
+          class="btn !shadow-none bg-indigo-600/90 hover:bg-indigo-500 text-white border border-indigo-500/40"
+        >
+          Save Notes
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</dialog>
+
+</body>
+</html>
