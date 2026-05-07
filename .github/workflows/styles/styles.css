@@ -1,0 +1,11 @@
+
+/* Prevents the layout from shifting slightly when modals open/close.
+   Keeps scrollbar space reserved even when scrolling is temporarily disabled. */
+html {
+  scrollbar-gutter: stable;
+}
+
+
+body {
+  font-family: 'Manrope', sans-serif;
+}
